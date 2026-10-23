@@ -56,8 +56,26 @@ localStorage.setItem(CLAVE_GASTOS, datosEnTexto);
 //     (usa try/catch: la app debe seguir funcionando)
 // ============================================================
 function cargarGastos() {
-  // Tu código aquí
+  // leemos el texto guardado en localStorage
+  const textoGuardado = localStorage.getItem(CLAVE_GASTOS);
+
+  // Si está vacío (es null), arrancamos la lista en blanco
+  if (textoGuardado === null);{
+  gastos = [];
+  return;
 }
+
+//Intentar armar la lista; si el texto venía dañado, el catch nos salva para no dañar la app
+try {
+  gastos = JSON.parse(textoGuardado);
+}catch (error) {
+  console.warn(" Este dato venia danado, toca empesar en limpio: , error");
+  gastos = [];
+}
+}
+
+
+
 
 // ============================================================
 // Ejercicio 03 · crearGasto(descripcion, monto, categoria)
