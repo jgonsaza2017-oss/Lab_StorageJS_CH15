@@ -60,7 +60,7 @@ function cargarGastos() {
   const textoGuardado = localStorage.getItem(CLAVE_GASTOS);
 
   // Si está vacío (es null), arrancamos la lista en blanco
-  if (textoGuardado === null);{
+  if (textoGuardado === null) {
   gastos = [];
   return;
 }
@@ -69,7 +69,7 @@ function cargarGastos() {
 try {
   gastos = JSON.parse(textoGuardado);
 }catch (error) {
-  console.warn(" Este dato venia danado, toca empesar en limpio: , error");
+  console.warn("Este dato venia danado, toca empesar en limpio: , error");
   gastos = [];
 }
 }
