@@ -42,7 +42,8 @@ function formatearPesos(valor) {
 // → empaca el arreglo con JSON.stringify.
 // ============================================================
 function guardarGastos() {
-  // Tu código aquí
+const datosEnTexto = JSON.stringify(gastos);
+localStorage.setItem(CLAVE_GASTOS, datosEnTexto);
 }
 
 // ============================================================
