@@ -88,7 +88,22 @@ try {
 // un número mayor que 0 (ojo: Number("abc") da NaN).
 // ============================================================
 function crearGasto(descripcion, monto, categoria) {
-  // Tu código aquí
+  // Limpiamos los espacios sobrantes en la descripcion
+  const textoLimpio = descripcion.trim();
+
+  // se valida que haya descripcion y que el monto sea un numero valido mayor a 0
+  if (textoLimpio === "" || Number.isNaN(monto) || monto <= 0 ) {
+
+  }
+
+  // Devolvemos el objeto armado con su fecha actual
+  return {
+    descripcion: textoLimpio,
+    monto: monto,
+    categoria: categoria,
+    fecha: new Date().toISOString()
+  };
+
 }
 
 // ============================================================
