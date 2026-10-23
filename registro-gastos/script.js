@@ -92,8 +92,8 @@ function crearGasto(descripcion, monto, categoria) {
   const textoLimpio = descripcion.trim();
 
   // se valida que haya descripcion y que el monto sea un numero valido mayor a 0
-  if (textoLimpio === "" || Number.isNaN(monto) || monto <= 0 ) {
-
+  if (textoLimpio === "" || Number.isNaN(monto) || monto <= 0) {
+    return null;
   }
 
   // Devolvemos el objeto armado con su fecha actual
@@ -103,7 +103,6 @@ function crearGasto(descripcion, monto, categoria) {
     categoria: categoria,
     fecha: new Date().toISOString()
   };
-
 }
 
 // ============================================================
