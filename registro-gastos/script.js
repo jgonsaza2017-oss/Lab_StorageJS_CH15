@@ -117,7 +117,27 @@ function crearGasto(descripcion, monto, categoria) {
 //   4. guárdalo (Ejercicio 01) y vuelve a pintar todo: actualizarTodo()
 // ============================================================
 function agregarGasto() {
-  // Tu código aquí
+  // Armamos el gasto con los valores del formulario
+  const nuevoGasto = crearGasto(
+  inputDescripcion.value,
+  Number(inputMonto.value),
+  selectCategoria.value
+);
+
+// Si no es un gasto valido, no hacemos nada y salimos
+if  (nuevoGasto === null) {
+  return;
+  }
+
+  // Lo metemos a la lista y limpiamos las cajas de texto
+  gastos.push(nuevoGasto);
+  inputDescripcion.value = "";
+  inputMonto.value = "";
+
+// Guardamos en localStorage y actualizamos la pantalla
+guardarGastos();
+actualizarTodo();
+
 }
 
 // ============================================================
