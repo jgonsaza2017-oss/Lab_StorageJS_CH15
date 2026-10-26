@@ -149,12 +149,33 @@ actualizarTodo();
 // No compares el texto completo: la hora casi nunca es la misma.
 // ============================================================
 function esDeHoy(gasto) {
-  // Tu código aquí
+  // Reconstruimos la fecha del gasto y sacamos la fecha de hoy
+const fechaGasto = new Date(gasto.fecha);
+  const hoy = new Date();
+
+// Verificamos que coincidan dia, mes y año
+  return (
+    fechaGasto.getDate() === hoy.getDate() &&
+    fechaGasto.getMonth() === hoy.getMonth() &&
+    fechaGasto.getFullYear() === hoy.getFullYear()
+  );
+
 }
 
 function esDeEsteMes(gasto) {
-  // Tu código aquí
+ // Reconstruimos la fecha del gasto y sacamos la fecha de hoy
+  const fechaGasto = new Date(gasto.fecha);
+  const hoy = new Date();
+
+
+// Verificamos que coincidan mes y año
+  return (
+    fechaGasto.getMonth() === hoy.getMonth() &&
+    fechaGasto.getFullYear() === hoy.getFullYear()
+  );
 }
+
+
 
 // ============================================================
 // Ejercicio 06 · sumarMontos(lista) y mostrarTotales()
@@ -165,11 +186,20 @@ function esDeEsteMes(gasto) {
 //   esDeEsteMes (con .filter) y sumarMontos.
 // ============================================================
 function sumarMontos(lista) {
-  // Tu código aquí
+  // Sumamos los montos de la lista arrancando desde 0 con .reduce()
+  return lista.reduce(function (total, gasto) {
+    return total + gasto.monto;
+  }, 0);
 }
 
 function mostrarTotales() {
-  // Tu código aquí
+ // Filtramos reutilizando las funciones de fecha del ejercicio anterior
+  const gastosDeHoy = gastos.filter(esDeHoy);
+  const gastosDelMes = gastos.filter(esDeEsteMes);
+
+  // Sumamos y mostramos en pantalla con formato de pesos
+  totalHoy.textContent = formatearPesos(sumarMontos(gastosDeHoy));
+  totalMes.textContent = formatearPesos(sumarMontos(gastosDelMes));
 }
 
 // ============================================================
@@ -180,8 +210,26 @@ function mostrarTotales() {
 // Las 5 categorías siempre aparecen, aunque su total sea $0.
 // ============================================================
 function mostrarCategorias() {
-  // Tu código aquí
+  // 1. Limpiamos la lista para no acumular elementos viejos
+  listaCategorias.innerHTML = "";
+
+// 2. Recorremos las 5 categorias fijas
+  CATEGORIAS.forEach(function (categoria) {
+    // Filtramos los gastos que pertenecen a esta categoria
+    const gastosDeCategoria = gastos.filter(function (gasto) {
+      return gasto.categoria === categoria;
+    });
+
+// Sumamos los montos de esa categoria
+    const total = sumarMontos(gastosDeCategoria);
+
+// Creamos el elemento li y lo mostramos en la lista
+    const li = document.createElement("li");
+    li.textContent = categoria + ": " + formatearPesos(total);
+    listaCategorias.appendChild(li);
+  });
 }
+
 
 // ============================================================
 // Ejercicio 08 · mostrarLista()
@@ -192,7 +240,32 @@ function mostrarCategorias() {
 // (En el Ejercicio 10 vuelves aquí para agregar el filtro.)
 // ============================================================
 function mostrarLista() {
-  // Tu código aquí
+  // 1. Limpiamos la lista en pantalla
+  listaGastos.innerHTML = "";
+
+  // 2. Recorremos los gastos usando su indice
+  gastos.forEach(function (gasto, indice) {
+    // Si el filtro no es "Todas" y no coincide con la categoria, nos lo saltamos
+    if (filtroActual !== "Todas" && gasto.categoria !== filtroActual) {
+      return;
+    }
+
+    const li = document.createElement("li");
+
+    // 3. Armamos el texto y el boton de eliminar con su data-index
+    li.innerHTML =
+      gasto.descripcion +
+      " - " +
+      formatearPesos(gasto.monto) +
+      " (" +
+      gasto.categoria +
+      ')<button class="eliminar" data-index="' +
+      indice +
+      '">Eliminar</button>';
+
+    // 4. Lo mostramos en la lista
+    listaGastos.appendChild(li);
+  });
 }
 
 // ============================================================
@@ -204,8 +277,22 @@ function mostrarLista() {
 // - sácalo del arreglo con splice, guarda y vuelve a pintar TODO
 // ============================================================
 function eliminarGasto(evento) {
-  // Tu código aquí
+ // 1. Verificamos si el clic fue en un boton de eliminar
+  if (!evento.target.classList.contains("eliminar")) {
+    return;
 }
+
+// 2. Leemos la posicion guardada en data-index y la pasamos a numero
+  const posicion = Number(evento.target.dataset.index);
+
+// 3. Eliminamos ese gasto del arreglo
+  gastos.splice(posicion, 1);
+
+  // 4. Guardamos en localStorage y refrescamos la pantalla
+  guardarGastos();
+  actualizarTodo();
+}
+
 
 // ============================================================
 // Ejercicio 10 · El filtro se recuerda solo en esta pestaña
@@ -218,11 +305,27 @@ function eliminarGasto(evento) {
 //   de otras categorías (data-index sigue siendo la posición en gastos)
 // ============================================================
 function cambiarFiltro() {
-  // Tu código aquí
+  // 1. Guardamos el valor seleccionado en la variable global y en sessionStorage
+  filtroActual = filtroLista.value;
+  sessionStorage.setItem(CLAVE_FILTRO, filtroActual);
+
+  // 2. Volvemos a pintar la lista con el filtro aplicado
+  mostrarLista();
 }
 
 function cargarFiltro() {
-  // Tu código aquí
+  // 1. Leemos el filtro guardado en la sesion actual
+  const filtroGuardado = sessionStorage.getItem(CLAVE_FILTRO);
+
+  // 2. Si existia lo usamos, si no arrancamos con "Todas"
+  if (filtroGuardado !== null) {
+    filtroActual = filtroGuardado;
+  } else {
+    filtroActual = "Todas";
+  }
+
+  // 3. Sincronizamos el select del formulario con ese valor
+  filtroLista.value = filtroActual;
 }
 
 // ===== Pintar todo (ya viene lista) =====
